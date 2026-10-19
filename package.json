@@ -1,0 +1,193 @@
+{
+  "name": "itsuki-judge",
+  "displayName": "ITSUKI JUDGE",
+  "description": "Competitive Programming Online/Local Judge extension for VS Code & VSCodium",
+  "version": "1.0.0",
+  "publisher": "harutoitsuki",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/harutoitsuki/itsuki-judge.git"
+  },
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Other",
+    "Education",
+    "Testing"
+  ],
+  "keywords": [
+    "competitive programming",
+    "judge",
+    "codeforces",
+    "atcoder",
+    "vnoi",
+    "testcases",
+    "c++",
+    "python"
+  ],
+  "main": "./dist/extension.js",
+  "icon": "media/icon.png",
+  "activationEvents": [
+    "onView:itsuki-judge.judgeView",
+    "onCommand:itsuki-judge.runAll",
+    "onCommand:itsuki-judge.addTest",
+    "onCommand:itsuki-judge.addNTests",
+    "onCommand:itsuki-judge.batchImport",
+    "onCommand:itsuki-judge.clearAll"
+  ],
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "itsuki-judge-sidebar",
+          "title": "ITSUKI JUDGE",
+          "icon": "media/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "itsuki-judge-sidebar": [
+        {
+          "type": "webview",
+          "id": "itsuki-judge.judgeView",
+          "name": "ITSUKI JUDGE",
+          "visibility": "visible"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "itsuki-judge.addTest",
+        "title": "Add Test Case",
+        "category": "ITSUKI JUDGE",
+        "icon": "$(add)"
+      },
+      {
+        "command": "itsuki-judge.addNTests",
+        "title": "Add N Test Cases",
+        "category": "ITSUKI JUDGE",
+        "icon": "$(list-ordered)"
+      },
+      {
+        "command": "itsuki-judge.batchImport",
+        "title": "Batch Import Tests Folder",
+        "category": "ITSUKI JUDGE",
+        "icon": "$(folder-opened)"
+      },
+      {
+        "command": "itsuki-judge.runAll",
+        "title": "Run All Tests",
+        "category": "ITSUKI JUDGE",
+        "icon": "$(play)"
+      },
+      {
+        "command": "itsuki-judge.clearAll",
+        "title": "Clear All Tests",
+        "category": "ITSUKI JUDGE",
+        "icon": "$(trash)"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "itsuki-judge.addTest",
+          "when": "view == itsuki-judge.judgeView",
+          "group": "navigation@1"
+        },
+        {
+          "command": "itsuki-judge.addNTests",
+          "when": "view == itsuki-judge.judgeView",
+          "group": "navigation@2"
+        },
+        {
+          "command": "itsuki-judge.batchImport",
+          "when": "view == itsuki-judge.judgeView",
+          "group": "navigation@3"
+        },
+        {
+          "command": "itsuki-judge.runAll",
+          "when": "view == itsuki-judge.judgeView",
+          "group": "navigation@4"
+        },
+        {
+          "command": "itsuki-judge.clearAll",
+          "when": "view == itsuki-judge.judgeView",
+          "group": "navigation@5"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "itsuki-judge.runAll",
+        "key": "ctrl+alt+r",
+        "mac": "cmd+alt+r"
+      },
+      {
+        "command": "itsuki-judge.addTest",
+        "key": "ctrl+alt+a",
+        "mac": "cmd+alt+a"
+      }
+    ],
+    "configuration": {
+      "title": "ITSUKI JUDGE",
+      "properties": {
+        "itsukiJudge.defaultTimeLimit": {
+          "type": "number",
+          "default": 1000,
+          "description": "Default execution time limit in milliseconds (ms)."
+        },
+        "itsukiJudge.defaultMemoryLimit": {
+          "type": "number",
+          "default": 256,
+          "description": "Default memory limit in Megabytes (MB)."
+        },
+        "itsukiJudge.cppCompiler": {
+          "type": "string",
+          "default": "g++",
+          "description": "C++ compiler executable or path."
+        },
+        "itsukiJudge.cppFlags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "-O3",
+            "-std=c++17"
+          ],
+          "description": "Compiler flags passed to C++ compiler."
+        },
+        "itsukiJudge.pythonCommand": {
+          "type": "string",
+          "default": "python3",
+          "description": "Python interpreter executable or path."
+        },
+        "itsukiJudge.javaCompiler": {
+          "type": "string",
+          "default": "javac",
+          "description": "Java compiler executable or path."
+        },
+        "itsukiJudge.javaCommand": {
+          "type": "string",
+          "default": "java",
+          "description": "Java runtime executable or path."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "test": "node --test dist-test/test/**/*.test.js",
+    "build:test": "tsc -p ./tsconfig.test.json",
+    "package": "vsce package --no-dependencies --allow-missing-repository"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@types/vscode": "^1.80.0",
+    "@vscode/vsce": "^3.2.1",
+    "typescript": "^5.3.3"
+  }
+}

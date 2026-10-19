@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ITSUKI JUDGE - Modernized UI/UX & Timer Preview</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+</head>
+<body class="bg-[var(--background,#181818)] text-[var(--foreground,#cccccc)] antialiased p-4 select-none">
+  <!-- Container Card representing VS Code Extension SideBar View -->
+  <div class="max-w-md mx-auto bg-[var(--card,#1e1e1e)] text-[var(--foreground,#cccccc)] border border-[var(--border,#30363d)] rounded-xl shadow-xl overflow-hidden font-sans">
+    
+    <!-- Extension Header (Exact Judge Brand Logo Intact) -->
+    <header class="flex items-center justify-between px-4 py-3 border-b border-[var(--border,#30363d)] bg-black/10">
+      <div class="flex items-center gap-2.5">
+        <!-- Exact ITSUKI JUDGE SVG Logo preserved intact -->
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-5 h-5 flex-shrink-0" fill="none">
+          <path d="M12 4L3 17H7.5L12 9.5L16.5 17H21L12 4Z" fill="#38BDF8" />
+          <rect x="5" y="19" width="14" height="2" rx="1" fill="#38BDF8" />
+        </svg>
+        <span class="font-bold text-sm tracking-wide text-[var(--foreground,#cccccc)]">ITSUKI JUDGE</span>
+      </div>
+      <div class="flex items-center gap-2 overflow-hidden">
+        <span class="font-mono text-xs text-sky-400 bg-black/30 border border-[var(--border,#30363d)] px-2 py-0.5 rounded truncate max-w-[130px]" title="/src/caykhe.cpp">caykhe.cpp</span>
+        <span class="text-xs font-bold text-cyan-200 bg-cyan-900 border border-cyan-700/50 px-2 py-0.5 rounded tracking-wide uppercase">C++</span>
+      </div>
+    </header>
+
+    <div class="p-4 space-y-3.5">
+      <!-- Feature: Real-time 3-Mode Timer (Opened, Created, Session) -->
+      <section id="timer-box" class="flex items-center justify-between p-3 bg-black/20 border border-[var(--border,#30363d)] rounded-lg transition-colors duration-200 hover:border-sky-500/50">
+        <div id="timer-clickable" class="flex flex-col cursor-pointer flex-1 mr-2" title="Click to cycle: Opened ↔ Created ↔ Session">
+          <div class="flex items-center gap-2">
+            <svg id="timer-icon" class="w-4 h-4 text-sky-400 flex-shrink-0 transition-colors" viewBox="0 0 16 16" fill="currentColor">
+              <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>
+              <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/>
+            </svg>
+            <span id="timer-tag" class="text-xs font-bold px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 tracking-wider">OPENED</span>
+            <span id="timer-val" class="font-mono text-sm font-bold tracking-wider text-[var(--foreground,#cccccc)]">00:15:32</span>
+          </div>
+          <div id="timer-sub" class="text-xs text-[var(--muted-foreground,#888888)] pl-0.5 mt-1 truncate">
+            Created: 2h 15m ago · Session: 00:12:40
+          </div>
+        </div>
+
+        <div class="flex items-center gap-1.5 flex-shrink-0">
+          <button id="btn-mode-toggle" class="p-1.5 rounded text-[var(--muted-foreground,#888888)] hover:text-[var(--foreground,#cccccc)] hover:bg-white/10 transition" title="Cycle Mode: Opened ↔ Created ↔ Session">
+            <svg class="w-4 h-4" viewBox="0 0 16 16" fill="currentColor">
+              <path d="M1 11.5a.5.5 0 0 0 .5.5h11.793l-3.147 3.146a.5.5 0 0 0 .708.708l4-4a.5.5 0 0 0 0-.708l-4-4a.5.5 0 0 0-.708.708L13.293 11H1.5a.5.5 0 0 0-.5.5zm14-7a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 5H14.5a.5.5 0 0 0 .5-.5z"/>
+            </svg>
+          </button>
+          <button id="btn-pause-toggle" class="p-1.5 rounded text-[var(--muted-foreground,#888888)] hover:text-[var(--foreground,#cccccc)] hover:bg-white/10 transition" title="Pause / Resume Solve Stopwatch">
+            <svg id="pause-icon-svg" class="w-4 h-4" viewBox="0 0 16 16" fill="currentColor">
+              <path d="M5.5 3.5A1.5 1.5 0 0 1 7 5v6a1.5 1.5 0 0 1-3 0V5a1.5 1.5 0 0 1 1.5-1.5zm5 0A1.5 1.5 0 0 1 12 5v6a1.5 1.5 0 0 1-3 0V5a1.5 1.5 0 0 1 1.5-1.5z"/>
+            </svg>
+          </button>
+          <button id="btn-reset-toggle" class="p-1.5 rounded text-[var(--muted-foreground,#888888)] hover:text-[var(--foreground,#cccccc)] hover:bg-white/10 transition" title="Reset Solve Stopwatch">
+            <svg class="w-4 h-4" viewBox="0 0 16 16" fill="currentColor">
+              <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
+              <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
+            </svg>
+          </button>
+        </div>
+      </section>
+
+      <!-- Settings Bar (TL / ML) -->
+      <section class="flex items-center gap-4 pb-2.5 border-b border-[var(--border,#30363d)] text-xs text-[var(--muted-foreground,#888888)]">
+        <div class="flex items-center gap-2">
+          <svg class="w-4 h-4 opacity-80" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M8 0a8 8 0 1 0 8 8A8 8 0 0 0 8 0zm0 14.5a6.5 6.5 0 1 1 6.5-6.5 6.5 6.5 0 0 1-6.5 6.5zM7.5 4v4.5l3.5 2.1.8-1.2-2.8-1.7V4z"/>
+          </svg>
+          <span class="font-semibold text-[var(--foreground,#cccccc)]">TL:</span>
+          <input type="number" id="input-tl" value="1000" class="w-16 text-center bg-black/20 border border-[var(--border,#30363d)] rounded px-2 py-0.5 text-xs text-[var(--foreground,#cccccc)] outline-none focus:border-sky-500" />
+          <span>ms</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <svg class="w-4 h-4 opacity-80" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M2 3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3zm2 1v8h8V4H4zm1 2h2v2H5V6zm4 0h2v2H9V6zm-4 4h2v2H5v-2zm4 0h2v2H9v-2z"/>
+          </svg>
+          <span class="font-semibold text-[var(--foreground,#cccccc)]">ML:</span>
+          <input type="number" id="input-ml" value="256" class="w-16 text-center bg-black/20 border border-[var(--border,#30363d)] rounded px-2 py-0.5 text-xs text-[var(--foreground,#cccccc)] outline-none focus:border-sky-500" />
+          <span>MB</span>
+        </div>
+      </section>
+
+      <!-- Summary Bar with Pass/Fail pill -->
+      <section class="flex items-center justify-between text-xs">
+        <div class="flex items-center gap-2">
+          <span class="font-semibold text-[var(--foreground,#cccccc)]" id="preview-test-count">3 test cases</span>
+          <span id="summary-pill" class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-white/5 border border-[var(--border,#30363d)]">
+            <span class="text-emerald-400">2/3 AC</span> · <span class="text-rose-400">1 WA</span>
+          </span>
+        </div>
+        <div class="flex items-center gap-2">
+          <button id="btn-toggle-all" class="p-1 rounded text-[var(--muted-foreground,#888888)] hover:text-[var(--foreground,#cccccc)] hover:bg-white/10" title="Expand/Collapse All">
+            <svg class="w-4 h-4" viewBox="0 0 16 16" fill="currentColor">
+              <path d="M8 1L4 5h8L8 1zM8 15l4-4H4l4 4z"/>
+            </svg>
+          </button>
+          <button id="btn-clear-tests" class="flex items-center gap-1.5 px-2 py-0.5 rounded text-xs text-[var(--muted-foreground,#888888)] hover:text-rose-400 hover:bg-rose-500/10 transition" title="Clear all tests">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 16 16" fill="currentColor">
+              <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+              <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+            </svg>
+            <span>Clear</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- Main Action Toolbar -->
+      <section class="space-y-2">
+        <div class="grid grid-cols-2 gap-2.5">
+          <button id="btn-add-test" class="flex items-center justify-center gap-2 px-3 py-2 rounded-md text-xs font-semibold bg-white/5 border border-[var(--border,#30363d)] hover:bg-white/10 active:scale-[0.98] transition">
+            <svg class="w-4 h-4 text-sky-400" viewBox="0 0 16 16" fill="currentColor">
+              <path d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2z"/>
+            </svg>
+            <span>+ Add Test</span>
+          </button>
+          <button id="btn-run-all" class="flex items-center justify-center gap-2 px-3 py-2 rounded-md text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white shadow-md active:scale-[0.98] transition">
+            <svg id="run-icon" class="w-4 h-4" viewBox="0 0 16 16" fill="currentColor">
+              <path d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z"/>
+            </svg>
+            <span id="run-text">Run All</span>
+          </button>
+        </div>
+        <div class="grid grid-cols-2 gap-2.5 text-xs">
+          <button id="btn-n-tests" class="flex items-center justify-center gap-1.5 px-3 py-1.5 rounded bg-white/5 border border-[var(--border,#30363d)] hover:bg-white/10 transition">
+            <svg class="w-4 h-4 text-[var(--muted-foreground,#888888)]" viewBox="0 0 16 16" fill="currentColor">
+              <path d="M2.5 3.5a.5.5 0 0 1 0-1h11a.5.5 0 0 1 0 1h-11zm0 4.5a.5.5 0 0 1 0-1h11a.5.5 0 0 1 0 1h-11zm0 4.5a.5.5 0 0 1 0-1h11a.5.5 0 0 1 0 1h-11z"/>
+            </svg>
+            <span>+ N Tests</span>
+          </button>
+          <button id="btn-import-tests" class="flex items-center justify-center gap-1.5 px-3 py-1.5 rounded bg-white/5 border border-[var(--border,#30363d)] hover:bg-white/10 transition">
+            <svg class="w-4 h-4 text-[var(--muted-foreground,#888888)]" viewBox="0 0 16 16" fill="currentColor">
+              <path d="M.54 3.87.5 3a2 2 0 0 1 2-2h3.672a2 2 0 0 1 1.414.586l.828.828A2 2 0 0 0 9.828 3h3.982a2 2 0 0 1 1.992 2.181l-.637 7A2 2 0 0 1 13.174 14H2.826a2 2 0 0 1-1.991-1.819l-.637-7a1.99 1.99 0 0 1 .342-1.31z"/>
+            </svg>
+            <span>Import Folder</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- Test Cases List -->
+      <section id="tests-list" class="space-y-3 pt-1">
+        
+        <!-- Test #1: AC (Collapsed) -->
+        <div id="card-1" class="border border-emerald-500/35 border-l-[3px] border-l-emerald-500 rounded-lg bg-black/20 overflow-hidden transition">
+          <div class="card-header flex items-center justify-between px-3.5 py-2.5 cursor-pointer hover:bg-white/5">
+            <div class="flex items-center gap-2.5">
+              <svg class="chevron-icon w-3.5 h-3.5 text-[var(--muted-foreground,#888888)] transition-transform duration-200" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/>
+              </svg>
+              <span class="text-xs font-semibold text-[var(--foreground,#cccccc)]">Test #1</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="inline-flex items-center gap-1 text-xs font-bold px-2 py-0.5 rounded bg-emerald-600 text-white">
+                <svg class="w-3 h-3" viewBox="0 0 16 16" fill="currentColor"><path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/></svg>
+                <span>AC</span>
+              </span>
+              <span class="text-xs bg-white/5 border border-white/10 px-1.5 py-0.5 rounded text-[var(--muted-foreground,#888888)]">14ms</span>
+              <button class="btn-run-single p-1 text-[var(--muted-foreground,#888888)] hover:text-emerald-400 hover:bg-emerald-500/10 rounded" title="Run test">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 16 16" fill="currentColor"><path d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="card-body hidden p-3 border-t border-[var(--border,#30363d)] space-y-2.5">
+            <div>
+              <div class="flex justify-between items-center mb-1">
+                <span class="text-xs font-bold text-[var(--muted-foreground,#888888)] uppercase">INPUT</span>
+                <button class="btn-copy text-xs text-[var(--muted-foreground,#888888)] hover:text-emerald-400 transition" data-text="4 10&#10;3 4 5 6">Copy</button>
+              </div>
+              <pre class="bg-black/30 border border-[var(--border,#30363d)] rounded p-2 text-xs font-mono text-[var(--foreground,#cccccc)]">4 10&#10;3 4 5 6</pre>
+            </div>
+            <div>
+              <div class="flex justify-between items-center mb-1">
+                <span class="text-xs font-bold text-[var(--muted-foreground,#888888)] uppercase">EXPECTED OUTPUT</span>
+                <button class="btn-copy text-xs text-[var(--muted-foreground,#888888)] hover:text-emerald-400 transition" data-text="YES">Copy</button>
+              </div>
+              <pre class="bg-black/30 border border-[var(--border,#30363d)] rounded p-2 text-xs font-mono text-[var(--foreground,#cccccc)]">YES</pre>
+            </div>
+          </div>
+        </div>
+
+        <!-- Test #2: WA (Expanded with Diff Visualizer & 1-Click Copy) -->
+        <div id="card-2" class="border border-rose-500/40 border-l-[3px] border-l-rose-500 rounded-lg bg-black/20 overflow-hidden">
+          <div class="card-header flex items-center justify-between px-3.5 py-2.5 cursor-pointer bg-white/5 border-b border-[var(--border,#30363d)]">
+            <div class="flex items-center gap-2.5">
+              <svg class="chevron-icon w-3.5 h-3.5 text-[var(--muted-foreground,#888888)] rotate-90 transform transition-transform duration-200" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/>
+              </svg>
+              <span class="text-xs font-semibold text-[var(--foreground,#cccccc)]">Test #2</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="inline-flex items-center gap-1 text-xs font-bold px-2 py-0.5 rounded bg-rose-600 text-white">
+                <svg class="w-3 h-3" viewBox="0 0 16 16" fill="currentColor"><path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/></svg>
+                <span>WA</span>
+              </span>
+              <span class="text-xs bg-white/5 border border-white/10 px-1.5 py-0.5 rounded text-[var(--muted-foreground,#888888)]">22ms</span>
+              <button class="btn-run-single p-1 text-[var(--muted-foreground,#888888)] hover:text-emerald-400 hover:bg-emerald-500/10 rounded" title="Run test">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 16 16" fill="currentColor"><path d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="card-body p-3.5 space-y-3">
+            <div>
+              <div class="flex justify-between items-center mb-1">
+                <span class="text-xs font-bold text-[var(--muted-foreground,#888888)] uppercase">INPUT</span>
+                <button class="btn-copy flex items-center gap-1 px-1.5 py-0.5 rounded text-xs text-[var(--muted-foreground,#888888)] hover:text-[var(--foreground,#cccccc)] hover:bg-white/10 transition" data-text="5&#10;1 3 2 5 4">
+                  <svg class="w-3 h-3" viewBox="0 0 16 16" fill="currentColor"><path d="M4 2a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V2zm2-1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H6z"/></svg>
+                  <span>Copy</span>
+                </button>
+              </div>
+              <textarea class="w-full bg-black/30 border border-[var(--border,#30363d)] rounded p-2 font-mono text-xs text-[var(--foreground,#cccccc)] h-14 outline-none focus:border-sky-500" spellcheck="false">5&#10;1 3 2 5 4</textarea>
+            </div>
+
+            <!-- Difference Comparison Box -->
+            <div class="border border-rose-500/40 rounded-lg overflow-hidden bg-black/20">
+              <div class="bg-rose-500/15 border-b border-rose-500/30 px-3 py-1.5 flex items-center justify-between text-xs">
+                <span class="font-bold text-rose-400">DIFFERENCE COMPARISON</span>
+                <span class="text-xs text-rose-300">Mismatch on line 1</span>
+              </div>
+              <table class="w-full text-xs font-mono border-collapse">
+                <thead>
+                  <tr class="bg-white/5 border-b border-[var(--border,#30363d)] text-[var(--muted-foreground,#888888)] text-left">
+                    <th class="p-1.5 w-8 text-center">#</th>
+                    <th class="p-1.5 border-r border-[var(--border,#30363d)]">EXPECTED</th>
+                    <th class="p-1.5">ACTUAL</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="bg-rose-500/20 text-xs">
+                    <td class="p-1.5 text-center text-[var(--muted-foreground,#888888)]">1</td>
+                    <td class="p-1.5 border-r border-[var(--border,#30363d)] text-emerald-400 font-semibold">1 2 3 4 5</td>
+                    <td class="p-1.5 text-rose-300 font-semibold">1 3 2 5 4</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Actual Output Area -->
+            <div>
+              <div class="flex justify-between items-center mb-1">
+                <span class="text-xs font-bold text-[var(--muted-foreground,#888888)] uppercase">ACTUAL OUTPUT</span>
+                <button class="btn-copy flex items-center gap-1 px-1.5 py-0.5 rounded text-xs text-[var(--muted-foreground,#888888)] hover:text-[var(--foreground,#cccccc)] hover:bg-white/10 transition" data-text="1 3 2 5 4">
+                  <svg class="w-3 h-3" viewBox="0 0 16 16" fill="currentColor"><path d="M4 2a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V2zm2-1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H6z"/></svg>
+                  <span>Copy</span>
+                </button>
+              </div>
+              <textarea class="w-full bg-black/30 border border-[var(--border,#30363d)] rounded p-2 font-mono text-xs text-rose-300 h-14 outline-none" readonly spellcheck="false">1 3 2 5 4</textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Test #3: TLE (Collapsed) -->
+        <div id="card-3" class="border border-amber-500/35 border-l-[3px] border-l-amber-500 rounded-lg bg-black/20 overflow-hidden transition">
+          <div class="card-header flex items-center justify-between px-3.5 py-2.5 cursor-pointer hover:bg-white/5">
+            <div class="flex items-center gap-2.5">
+              <svg class="chevron-icon w-3.5 h-3.5 text-[var(--muted-foreground,#888888)] transition-transform duration-200" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/>
+              </svg>
+              <span class="text-xs font-semibold text-[var(--foreground,#cccccc)]">Test #3</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="inline-flex items-center gap-1 text-xs font-bold px-2 py-0.5 rounded bg-amber-600 text-white">
+                <svg class="w-3 h-3" viewBox="0 0 16 16" fill="currentColor"><path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/></svg>
+                <span>TLE</span>
+              </span>
+              <span class="text-xs bg-white/5 border border-white/10 px-1.5 py-0.5 rounded text-[var(--muted-foreground,#888888)]">> 1000ms</span>
+              <button class="btn-run-single p-1 text-[var(--muted-foreground,#888888)] hover:text-emerald-400 hover:bg-emerald-500/10 rounded" title="Run test">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 16 16" fill="currentColor"><path d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+    </div>
+  </div>
+
+  <!-- Interactive Modal for Add N Tests -->
+  <div id="modal-add-n" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+    <div class="bg-[var(--card,#1e1e1e)] border border-[var(--border,#30363d)] rounded-xl max-w-xs w-full shadow-2xl overflow-hidden p-5 space-y-4">
+      <div class="flex items-center justify-between border-b border-[var(--border,#30363d)] pb-2.5">
+        <h3 class="font-bold text-sm text-[var(--foreground,#cccccc)]">Add N Test Cases</h3>
+        <button id="btn-close-modal" class="text-[var(--muted-foreground,#888888)] hover:text-[var(--foreground,#cccccc)] text-base leading-none">&times;</button>
+      </div>
+      <div>
+        <label for="n-input" class="block text-xs text-[var(--muted-foreground,#888888)] mb-1.5">Number of test cases (1 - 100):</label>
+        <input type="number" id="n-input" min="1" max="100" value="5" class="w-full bg-[var(--background,#181818)] border border-[var(--border,#30363d)] rounded-md px-3 py-1.5 text-xs text-[var(--foreground,#cccccc)] outline-none focus:border-sky-500" />
+      </div>
+      <div class="flex justify-end gap-2 pt-1">
+        <button id="btn-cancel-modal" class="px-3 py-1.5 rounded-md text-xs bg-white/5 border border-[var(--border,#30363d)] hover:bg-white/10 text-[var(--foreground,#cccccc)]">Cancel</button>
+        <button id="btn-confirm-modal" class="px-3 py-1.5 rounded-md text-xs font-semibold bg-sky-600 hover:bg-sky-500 text-white">Create</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Real-time Interactive Logic -->
+  <script>
+    (function () {
+      // 3 Timer Modes: 'opened' | 'created' | 'session'
+      let timerMode = 'opened';
+      let isPaused = false;
+      let sessionAccumulatedMs = 760000; // ~12m 40s
+      let sessionLastStarted = Date.now();
+      const fileBirthtime = Date.now() - (2 * 3600 + 15 * 60) * 1000; // 2h 15m ago
+      let fileLastOpened = Date.now() - (15 * 60 + 32) * 1000; // 15m 32s ago
+
+      function formatHms(ms) {
+        if (ms < 0 || isNaN(ms)) ms = 0;
+        const totalSecs = Math.floor(ms / 1000);
+        const hours = Math.floor(totalSecs / 3600);
+        const minutes = Math.floor((totalSecs % 3600) / 60);
+        const seconds = totalSecs % 60;
+        const pad = (n) => String(n).padStart(2, '0');
+        return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+      }
+
+      function formatRelative(msDiff) {
+        const diffSec = Math.floor(msDiff / 1000);
+        if (diffSec < 60) return 'just now';
+        const diffMin = Math.floor(diffSec / 60);
+        if (diffMin < 60) return `${diffMin}m ago`;
+        const diffHr = Math.floor(diffMin / 60);
+        const remMin = diffMin % 60;
+        if (diffHr < 24) return remMin > 0 ? `${diffHr}h ${remMin}m ago` : `${diffHr}h ago`;
+        return `${Math.floor(diffHr / 24)}d ago`;
+      }
+
+      const timerValEl = document.getElementById('timer-val');
+      const timerTagEl = document.getElementById('timer-tag');
+      const timerSubEl = document.getElementById('timer-sub');
+      const timerBoxEl = document.getElementById('timer-box');
+      const timerIconEl = document.getElementById('timer-icon');
+      const pauseIconEl = document.getElementById('pause-icon-svg');
+
+      function updateClock() {
+        const now = Date.now();
+        const sessionElapsed = sessionAccumulatedMs + (isPaused ? 0 : Math.max(0, now - sessionLastStarted));
+        const openedElapsed = Math.max(0, now - fileLastOpened);
+        const createdElapsed = Math.max(0, now - fileBirthtime);
+
+        if (timerMode === 'opened') {
+          timerValEl.textContent = formatHms(openedElapsed);
+          timerTagEl.textContent = 'OPENED';
+          timerTagEl.className = 'text-xs font-bold px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 tracking-wider';
+          timerSubEl.textContent = `Created: ${formatRelative(now - fileBirthtime)} · Session: ${formatHms(sessionElapsed)}`;
+        } else if (timerMode === 'created') {
+          timerValEl.textContent = formatHms(createdElapsed);
+          timerTagEl.textContent = 'CREATED';
+          timerTagEl.className = 'text-xs font-bold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 tracking-wider';
+          timerSubEl.textContent = `Opened: ${formatRelative(now - fileLastOpened)} · Session: ${formatHms(sessionElapsed)}`;
+        } else {
+          // Session mode
+          timerValEl.textContent = formatHms(sessionElapsed);
+          if (isPaused) {
+            timerTagEl.textContent = 'PAUSED';
+            timerTagEl.className = 'text-xs font-bold px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 border border-amber-500/30 tracking-wider';
+          } else {
+            timerTagEl.textContent = 'SESSION';
+            timerTagEl.className = 'text-xs font-bold px-2 py-0.5 rounded bg-sky-500/20 text-sky-400 border border-sky-500/30 tracking-wider';
+          }
+          timerSubEl.textContent = `Opened: ${formatRelative(now - fileLastOpened)} · Created: ${formatRelative(now - fileBirthtime)}`;
+        }
+
+        if (isPaused) {
+          timerBoxEl.classList.add('border-amber-500/40');
+          timerIconEl.classList.remove('text-sky-400');
+          timerIconEl.classList.add('text-amber-400');
+          pauseIconEl.innerHTML = '<path d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z"/>';
+        } else {
+          timerBoxEl.classList.remove('border-amber-500/40');
+          timerIconEl.classList.add('text-sky-400');
+          timerIconEl.classList.remove('text-amber-400');
+          pauseIconEl.innerHTML = '<path d="M5.5 3.5A1.5 1.5 0 0 1 7 5v6a1.5 1.5 0 0 1-3 0V5a1.5 1.5 0 0 1 1.5-1.5zm5 0A1.5 1.5 0 0 1 12 5v6a1.5 1.5 0 0 1-3 0V5a1.5 1.5 0 0 1 1.5-1.5z"/>';
+        }
+      }
+
+      setInterval(updateClock, 1000);
+      updateClock();
+
+      function cycleMode() {
+        if (timerMode === 'opened') timerMode = 'created';
+        else if (timerMode === 'created') timerMode = 'session';
+        else timerMode = 'opened';
+        updateClock();
+      }
+
+      document.getElementById('timer-clickable').addEventListener('click', cycleMode);
+      document.getElementById('btn-mode-toggle').addEventListener('click', (e) => {
+        e.stopPropagation();
+        cycleMode();
+      });
+
+      document.getElementById('btn-pause-toggle').addEventListener('click', (e) => {
+        e.stopPropagation();
+        const now = Date.now();
+        if (!isPaused) {
+          sessionAccumulatedMs += Math.max(0, now - sessionLastStarted);
+          isPaused = true;
+        } else {
+          sessionLastStarted = now;
+          isPaused = false;
+        }
+        updateClock();
+      });
+
+      document.getElementById('btn-reset-toggle').addEventListener('click', (e) => {
+        e.stopPropagation();
+        sessionAccumulatedMs = 0;
+        sessionLastStarted = Date.now();
+        isPaused = false;
+        updateClock();
+      });
+
+      // Accordion toggle
+      document.querySelectorAll('.card-header').forEach((hdr) => {
+        hdr.addEventListener('click', (e) => {
+          if (e.target.closest('.btn-run-single')) return;
+          const card = hdr.closest('div[id^="card-"]');
+          const body = card.querySelector('.card-body');
+          const chevron = card.querySelector('.chevron-icon');
+          if (body) {
+            const isHidden = body.classList.contains('hidden');
+            body.classList.toggle('hidden', !isHidden);
+            chevron.classList.toggle('rotate-90', isHidden);
+          }
+        });
+      });
+
+      // Expand / Collapse all
+      let allExpanded = false;
+      document.getElementById('btn-toggle-all').addEventListener('click', () => {
+        allExpanded = !allExpanded;
+        document.querySelectorAll('div[id^="card-"]').forEach((card) => {
+          const body = card.querySelector('.card-body');
+          const chevron = card.querySelector('.chevron-icon');
+          if (body) {
+            body.classList.toggle('hidden', !allExpanded);
+            chevron.classList.toggle('rotate-90', allExpanded);
+          }
+        });
+      });
+
+      // 1-Click Clipboard Copy with visual feedback
+      document.querySelectorAll('.btn-copy').forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const text = btn.getAttribute('data-text') || '';
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text);
+          }
+          const origHtml = btn.innerHTML;
+          btn.innerHTML = '✓ Copied!';
+          btn.classList.add('text-emerald-400');
+          setTimeout(() => {
+            btn.innerHTML = origHtml;
+            btn.classList.remove('text-emerald-400');
+          }, 1500);
+        });
+      });
+
+      // Run All Judging simulation
+      const btnRunAll = document.getElementById('btn-run-all');
+      const runText = document.getElementById('run-text');
+      const runIcon = document.getElementById('run-icon');
+
+      btnRunAll.addEventListener('click', () => {
+        runText.textContent = 'Judging...';
+        btnRunAll.classList.remove('bg-emerald-600', 'hover:bg-emerald-500');
+        btnRunAll.classList.add('bg-sky-600');
+        runIcon.innerHTML = '<path d="M8 1a7 7 0 1 0 7 7A7 7 0 0 0 8 1zm0 2a5 5 0 1 1-5 5 5 5 0 0 1 5-5z" opacity="0.25"/><path d="M8 1a7 7 0 0 1 7 7h-2a5 5 0 0 0-5-5V1z"/>';
+        runIcon.classList.add('animate-spin');
+
+        setTimeout(() => {
+          runText.textContent = 'Run All';
+          btnRunAll.classList.remove('bg-sky-600');
+          btnRunAll.classList.add('bg-emerald-600', 'hover:bg-emerald-500');
+          runIcon.classList.remove('animate-spin');
+          runIcon.innerHTML = '<path d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z"/>';
+        }, 1200);
+      });
+
+      // Modal Dialog Logic
+      const modal = document.getElementById('modal-add-n');
+      const btnNTests = document.getElementById('btn-n-tests');
+      const btnCloseModal = document.getElementById('btn-close-modal');
+      const btnCancelModal = document.getElementById('btn-cancel-modal');
+      const btnConfirmModal = document.getElementById('btn-confirm-modal');
+      const nInput = document.getElementById('n-input');
+
+      btnNTests.addEventListener('click', () => {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        nInput.focus();
+        nInput.select();
+      });
+
+      function closeModal() {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }
+
+      btnCloseModal.addEventListener('click', closeModal);
+      btnCancelModal.addEventListener('click', closeModal);
+      btnConfirmModal.addEventListener('click', () => {
+        const val = parseInt(nInput.value, 10);
+        if (val >= 1 && val <= 100) {
+          const testList = document.getElementById('tests-list');
+          const currentCount = testList.children.length;
+          const testCountLabel = document.getElementById('preview-test-count');
+          testCountLabel.textContent = `${currentCount + val} test cases`;
+          closeModal();
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
