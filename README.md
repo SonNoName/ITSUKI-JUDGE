@@ -1,6 +1,6 @@
 # ITSUKI JUDGE 🚀
 
-**ITSUKI JUDGE** là tiện ích mở rộng (VS Code & VSCodium Extension) dành riêng cho cộng đồng Lập trình Thi đấu (Competitive Programming - CP). Extension cung cấp môi trường chấm bài trực tiếp (Local/Online Judge) ngay trên thanh Sidebar với giao diện hiện đại, kế thừa phong cách tối giản của "CP Judge", tích hợp chặt chẽ với VSCodium và VS Code trên Linux, macOS và Windows.
+**ITSUKI JUDGE** là tiện ích mở rộng (VS Code & VSCodium Extension) dành riêng cho cộng đồng Lập trình Thi đấu (Competitive Programming - CP). Extension cung cấp môi trường chấm bài trực tiếp (Local/Online Judge) ngay trên thanh Sidebar .Lam Son Copyright .Với giao diện hiện đại, kế thừa phong cách tối giản của "CP Judge", tích hợp chặt chẽ với VSCodium và VS Code trên Linux, macOS và Windows.
 
 ---
 
